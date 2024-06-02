@@ -1,0 +1,6 @@
+backend/**/*.pyc
+backend/**/migrations
+backend/venv
+
+application/node_modules
+application/.vite
