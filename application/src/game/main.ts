@@ -1,18 +1,32 @@
 import Phaser from "phaser";
 import { TutoScene } from "./scenes/tuto.scene";
 
-let config: Phaser.Types.Core.GameConfig = {
+const DEFAULT_WIDTH = 1280;
+const DEFAULT_HEIGHT = 720;
+
+const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    backgroundColor: '#000000',
+    scale: {
+        parent: 'phaser-game',
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: DEFAULT_WIDTH,
+        height: DEFAULT_HEIGHT
+    },
+    scene: [TutoScene],
+    dom: {
+        createContainer: true
+    },
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { x: 0, y: 300 },
-            debug: false
+            debug: false,
+            gravity: { y: 300 }
         }
-    },
-    scene: TutoScene
+    }
 };
 
-let game = new Phaser.Game(config);
+window.addEventListener('load', () => {
+    const game = new Phaser.Game(config);
+});

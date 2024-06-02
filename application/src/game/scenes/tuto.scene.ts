@@ -19,6 +19,18 @@ export class TutoScene extends Phaser.Scene {
             'assets/character/run/run_sheet.png',
             { frameWidth: 80, frameHeight: 80 }
         );
+        this.load.spritesheet('character_jump',
+            'assets/character/jump/jump_sheet.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+        this.load.spritesheet('character_attack',
+            'assets/character/attack/attack.png',
+            { frameWidth: 96, frameHeight: 80 }
+        );
+        this.load.spritesheet('character_end_jump',
+            'assets/character/jump_end/jump_end_sheet.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
     }
 
     create() {
