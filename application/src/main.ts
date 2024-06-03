@@ -6,11 +6,13 @@ if (require('electron-squirrel-startup')) {
     app.quit();
 }
 
+let mainWindow: BrowserWindow;
+
 const createWindow = () => {
     // Create the browser window.
     const primaryDisplay = screen.getPrimaryDisplay();
     const { width, height } = primaryDisplay.workAreaSize;
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: width,
         height: height,
         // fullscreen: true,

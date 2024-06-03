@@ -2,58 +2,49 @@ import Phaser from "phaser";
 import { Player } from "../entities/player";
 
 export class TutoScene extends Phaser.Scene {
-    platforms!: Phaser.Physics.Arcade.StaticGroup;
     player!: Player;
+    sky!: Array<Phaser.GameObjects.TileSprite>;
 
-    preload() {
-        this.load.image('sky', 'assets/background/sky.png');
-        this.load.image('ground', 'assets/platform.png');
-
-        this.load.image('empty_health', 'assets/hud/health/empty.png');
-        this.load.image('half_health_1', 'assets/hud/health/half_1.png');
-        this.load.image('half_health_2', 'assets/hud/health/half_2.png');
-        this.load.image('full_health_1', 'assets/hud/health/full_1.png');
-        this.load.image('full_health_2', 'assets/hud/health/full_2.png');
-        this.load.image('golden_health_1', 'assets/hud/health/golden_1.png');
-        this.load.image('golden_health_2', 'assets/hud/health/golden_2.png');
-
-        this.load.spritesheet('character_idle',
-            'assets/character/idle/idle_sheet.png',
-            { frameWidth: 64, frameHeight: 80 }
-        );
-        this.load.spritesheet('character_run',
-            'assets/character/run/run_sheet.png',
-            { frameWidth: 80, frameHeight: 80 }
-        );
-        this.load.spritesheet('character_jump',
-            'assets/character/jump/jump_sheet.png',
-            { frameWidth: 64, frameHeight: 64 }
-        );
-        this.load.spritesheet('character_attack',
-            'assets/character/attack/attack_sheet.png',
-            { frameWidth: 96, frameHeight: 80 }
-        );
-        this.load.spritesheet('character_dead',
-            'assets/character/dead/dead_sheet.png',
-            { frameWidth: 80, frameHeight: 64 }
-        );
+    constructor() {
+        super({ key: "TutoScene" });
     }
 
     create() {
-        const sky = this.add.image(400, 300, 'sky');
-        sky.setDisplaySize(this.scale.width, this.scale.height);
+        const screenWidth = this.scale.width;
+        const screenHeight = this.scale.height;
 
-        this.platforms = this.physics.add.staticGroup();
-        this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-        this.platforms.create(600, 400, 'ground');
-        this.platforms.create(50, 250, 'ground');
-        this.platforms.create(750, 220, 'ground');
+        const map = this.make.tilemap({ key: "tuto_level" });
+        const tileset = map.addTilesetImage('tiles', 'tiles');
+
+        const tileSize = map.tileHeight;
+        const mapHeightInTiles = map.height;
+
+        const scale = screenHeight / (mapHeightInTiles * tileSize);
+
+        this.sky = new Array<Phaser.GameObjects.TileSprite>();
+        for (let i = 1; i < 5; i++) {
+            const sky = this.add.tileSprite(screenWidth / 2, screenHeight / 2, screenWidth, screenHeight, `blue_sky_${i}`);
+            const sky_ratio = sky.width / sky.height;
+            sky.setScale(screenWidth / sky.width, screenHeight / sky.height);
+            sky.setScrollFactor(0);
+            this.sky.push(sky);
+        }
+
+        const groundLayer = map.createLayer('ground', tileset, 0, 0);
+        groundLayer.setCollisionBetween(1, map.width);
+
+        groundLayer.setScale(scale);
 
         this.player = new Player(this, 100, 450, 'character_idle');
-        this.physics.add.collider(this.player, this.platforms);
+        this.player.setScale(scale);
+        this.physics.add.collider(this.player, groundLayer);
     }
 
     update(time: number, delta: number): void {
+        this.sky.map(tileSprite => {
+            tileSprite.tilePositionX += 0.2;
+        })
+
         this.player.update();
     }
 }

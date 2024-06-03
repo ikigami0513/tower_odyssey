@@ -44,6 +44,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     max_health_point: number;
     private _health_point: number;
     health_bar: HealthBar;
+    show_hitbox: boolean;
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
@@ -61,8 +62,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.keys = new Keys(this.scene);
         this.state = PlayerState.IDLE;
 
-        this.state_debug = this.scene.add.text(10, 10, this.state.toString());
-        this.fps_debug = this.scene.add.text(this.scene.cameras.main.width - 120, 10, `FPS: ${this.getFPS()}`);
+        this.state_debug = this.scene.add.text(10, 10, this.state.toString(), { color: '#000000' });
+        this.fps_debug = this.scene.add.text(this.scene.cameras.main.width - 120, 10, `FPS: ${this.getFPS()}`, { color: '#000000' });
 
         this.attack_released = true;
 
@@ -72,8 +73,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.hitboxGraphics.lineStyle(2, 0xFF0000);
 
         this.max_health_point = 20;
-        this._health_point = 18;
+        this._health_point = this.max_health_point;
         this.health_bar = new HealthBar(this.scene, this);
+
+        this.show_hitbox = false;
     }
 
     public get health_point(): number {
@@ -98,13 +101,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     update(): void {
         this.hitbox_update();
-        // this.hitbox_graphics_update();
+        if (this.show_hitbox) {
+            this.hitbox_graphics_update();
+        }
+
+        if (this.body.blocked.down && this.state === PlayerState.JUMP) {
+            this.state = PlayerState.IDLE;
+            this.anims.play('idle', true);
+        }
 
         if ([PlayerState.IDLE, PlayerState.JUMP, PlayerState.MOVE, PlayerState.FALL].includes(this.state as PlayerState)) {
             if (this.keys.left.isDown) {
                 this.setVelocityX(-160);
                 this.flipX = true;
-                if (this.body.touching.down) {
+                if (this.state !== PlayerState.JUMP) {
                     this.anims.play('run', true);
                     this.state = PlayerState.MOVE;
                 }
@@ -112,26 +122,26 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             else if (this.keys.right.isDown) {
                 this.setVelocityX(160);
                 this.flipX = false;
-                if (this.body.touching.down) {
+                if (this.state !== PlayerState.JUMP) {
                     this.anims.play('run', true);
                     this.state = PlayerState.MOVE;
                 }
             }
             else {
                 this.setVelocityX(0);
-                if (this.body.touching.down && this.anims.currentAnim?.key !== 'idle') {
+                if (this.state !== PlayerState.JUMP && this.anims.currentAnim?.key !== 'idle') {
                     this.anims.play('idle');
                     this.state = PlayerState.IDLE;
                 }
             }
     
-            if (this.keys.up.isDown && this.body.touching.down) {
+            if (this.keys.up.isDown && this.state !== PlayerState.JUMP) {
                 this.anims.play('jump', true);
                 this.state = PlayerState.JUMP;
                 this.setVelocityY(-330);
             }
 
-            if (this.keys.space.isDown && this.body.touching.down && this.attack_released) {
+            if (this.keys.space.isDown && this.state !== PlayerState.JUMP && this.attack_released) {
                 this.setVelocityX(0)
                 this.anims.play('first_attack', true);
                 this.state = PlayerState.FIRST_ATTACK;
@@ -145,7 +155,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.debug_commands();
         }
         else if (this.state == PlayerState.FIRST_ATTACK) {
-            if (this.keys.space.isDown && this.body.touching.down && this.attack_released) {
+            if (this.keys.space.isDown && this.attack_released) {
                 this.state = PlayerState.SECOND_ATTACK;
                 this.attack_released = false;
             }

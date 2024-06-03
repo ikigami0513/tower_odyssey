@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { PreloadScene } from "./scenes/preload.scene";
 import { TutoScene } from "./scenes/tuto.scene";
 
 const DEFAULT_WIDTH = 1280;
@@ -14,7 +15,7 @@ const config = {
         width: DEFAULT_WIDTH,
         height: DEFAULT_HEIGHT
     },
-    scene: [TutoScene],
+    scene: [PreloadScene, TutoScene],
     dom: {
         createContainer: true
     },
@@ -22,7 +23,7 @@ const config = {
         default: 'arcade',
         arcade: {
             debug: false,
-            gravity: { x: 0, y: 300 }
+            gravity: { x: 0, y: 600 }
         }
     }
 };
