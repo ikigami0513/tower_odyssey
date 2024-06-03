@@ -6,10 +6,16 @@ export class TutoScene extends Phaser.Scene {
     player!: Player;
 
     preload() {
-        this.load.image('sky', 'assets/sky.png');
+        this.load.image('sky', 'assets/background/sky.png');
         this.load.image('ground', 'assets/platform.png');
-        this.load.image('star', 'assets/star.png');
-        this.load.image('bomb', 'assets/bomb.png');
+
+        this.load.image('empty_health', 'assets/hud/health/empty.png');
+        this.load.image('half_health_1', 'assets/hud/health/half_1.png');
+        this.load.image('half_health_2', 'assets/hud/health/half_2.png');
+        this.load.image('full_health_1', 'assets/hud/health/full_1.png');
+        this.load.image('full_health_2', 'assets/hud/health/full_2.png');
+        this.load.image('golden_health_1', 'assets/hud/health/golden_1.png');
+        this.load.image('golden_health_2', 'assets/hud/health/golden_2.png');
 
         this.load.spritesheet('character_idle',
             'assets/character/idle/idle_sheet.png',
@@ -24,17 +30,18 @@ export class TutoScene extends Phaser.Scene {
             { frameWidth: 64, frameHeight: 64 }
         );
         this.load.spritesheet('character_attack',
-            'assets/character/attack/attack.png',
+            'assets/character/attack/attack_sheet.png',
             { frameWidth: 96, frameHeight: 80 }
         );
-        this.load.spritesheet('character_end_jump',
-            'assets/character/jump_end/jump_end_sheet.png',
-            { frameWidth: 64, frameHeight: 64 }
+        this.load.spritesheet('character_dead',
+            'assets/character/dead/dead_sheet.png',
+            { frameWidth: 80, frameHeight: 64 }
         );
     }
 
     create() {
-        this.add.image(400, 300, 'sky');
+        const sky = this.add.image(400, 300, 'sky');
+        sky.setDisplaySize(this.scale.width, this.scale.height);
 
         this.platforms = this.physics.add.staticGroup();
         this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
