@@ -14,6 +14,7 @@ export class HealthBar {
 
         for (let i = 1; i < this.player.max_health_point / 2 + 1; i++) {
             const heart = this.scene.add.sprite(35 * i, this.scene.cameras.main.height - 40, 'full_health_1') as Phaser.Physics.Arcade.Sprite;
+            heart.setScrollFactor(0);
             this.hearts.push(heart);
             heart.anims.play('full_health');
         }

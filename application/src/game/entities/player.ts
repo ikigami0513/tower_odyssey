@@ -65,6 +65,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.state_debug = this.scene.add.text(10, 10, this.state.toString(), { color: '#000000' });
         this.fps_debug = this.scene.add.text(this.scene.cameras.main.width - 120, 10, `FPS: ${this.getFPS()}`, { color: '#000000' });
 
+        this.state_debug.setScrollFactor(0);
+        this.fps_debug.setScrollFactor(0);
+
         this.attack_released = true;
 
         this.on('animationcomplete', this.handleAnimationComplete, this);
@@ -76,7 +79,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this._health_point = this.max_health_point;
         this.health_bar = new HealthBar(this.scene, this);
 
-        this.show_hitbox = false;
+        this.show_hitbox = true;
     }
 
     public get health_point(): number {
@@ -206,6 +209,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         else if (this.state === PlayerState.DEAD) {
             this.body.setSize(80, 64);
             this.body.setOffset(0, -16);
+        }
+        else if (this.state === PlayerState.JUMP) {
+            this.body.setSize(64, 80);
+            this.body.setOffset(-20, -16);
         }
     }
 

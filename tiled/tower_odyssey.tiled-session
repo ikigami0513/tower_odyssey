@@ -3,24 +3,25 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "tuto_level.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
         "tuto_level.tmx": {
-            "scale": 1.5,
+            "scale": 0.33,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 342.33333333333337,
-                "y": 880.3333333333333
+                "x": 1246.9696969696968,
+                "y": 142.4242424242425
             }
         },
         "tuto_level.tmx#Tiles": {
             "scaleInDock": 2
         },
         "tuto_level.tmx#tiles": {
-            "scaleInDock": 4
+            "scaleInDock": 5.5
         }
     },
     "last.exportedFilePath": "C:/Users/ikiga/projets/tower_odyssey/application/assets/map",
@@ -32,6 +33,7 @@
     "map.tileWidth": 16,
     "map.width": 200,
     "openFiles": [
+        "tuto_level.tmx"
     ],
     "project": "tower_odyssey.tiled-project",
     "recentFiles": [
