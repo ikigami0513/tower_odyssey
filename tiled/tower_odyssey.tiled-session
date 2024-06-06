@@ -10,18 +10,18 @@
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
         "tuto_level.tmx": {
-            "scale": 0.33,
-            "selectedLayer": 0,
+            "scale": 4,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 1246.9696969696968,
-                "y": 142.4242424242425
+                "x": 353.125,
+                "y": 607.375
             }
         },
         "tuto_level.tmx#Tiles": {
             "scaleInDock": 2
         },
         "tuto_level.tmx#tiles": {
-            "scaleInDock": 5.5
+            "scaleInDock": 1.5
         }
     },
     "last.exportedFilePath": "C:/Users/ikiga/projets/tower_odyssey/application/assets/map",

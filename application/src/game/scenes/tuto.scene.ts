@@ -41,9 +41,19 @@ export class TutoScene extends Phaser.Scene {
         const backgroundLayer = map.createLayer('background', tileset, 0, screenHeight - map.height * tileSize * scale);
         backgroundLayer.setScale(scale);
 
-        this.player = new Player(this, 100, 450, 'character_idle');
+        this.player = new Player(this, 100, 450, 'character_idle_1');
         this.player.setScale(scale);
         this.physics.add.collider(this.player, groundLayer);
+
+        const entitiesLayer = map.getObjectLayer('entities');
+        if (entitiesLayer) {
+            entitiesLayer.objects.forEach((object) => {
+                const entity = object as Phaser.Types.Tilemaps.TiledObject;
+                if (entity.name === 'player_spawn') {
+                    this.player.setPosition(entity.x, entity.y);
+                }
+            });
+        }
 
         // Configurer les limites de la caméra et du monde
         this.cameras.main.setBounds(0, 0, mapWidthInTiles * tileSize * scale, mapHeightInTiles * tileSize * scale);
@@ -54,7 +64,7 @@ export class TutoScene extends Phaser.Scene {
 
     update(time: number, delta: number): void {
         this.sky.forEach(tileSprite => {
-            tileSprite.tilePositionX += 0.4;
+            tileSprite.tilePositionX += 0.2;
         });
 
         this.player.update();

@@ -29,7 +29,6 @@ enum PlayerState {
     IDLE = "IDLE",
     MOVE = "MOVE",
     JUMP = "JUMP",
-    FALL = "FALL",
     DEAD = "DEAD",
     FIRST_ATTACK = "FIRST_ATTACK",
     SECOND_ATTACK = "SECOND_ATTACK"
@@ -113,7 +112,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.play('idle', true);
         }
 
-        if ([PlayerState.IDLE, PlayerState.JUMP, PlayerState.MOVE, PlayerState.FALL].includes(this.state as PlayerState)) {
+        if ([PlayerState.IDLE, PlayerState.JUMP, PlayerState.MOVE].includes(this.state as PlayerState)) {
             if (this.keys.left.isDown) {
                 this.setVelocityX(-160);
                 this.flipX = true;
@@ -194,25 +193,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     hitbox_update() {
-        if (this.state === PlayerState.IDLE) {
-            this.body.setSize(64, 80);
-            this.body.setOffset(-20, -16);
+        this.body.setSize(this.texture.source[0].width, this.texture.source[0].height);
+
+        if (this.texture.key === "character_dead_8") {
+            this.body.setOffset(0, -4);
         }
-        else if (this.state === PlayerState.MOVE) {
-            this.body.setSize(80, 80);
-            this.body.setOffset(-20, -16);
-        }
-        else if (this.state === PlayerState.FIRST_ATTACK || this.state === PlayerState.SECOND_ATTACK) {
-            this.body.setSize(96, 80);
-            this.body.setOffset(-8, -16);
-        }
-        else if (this.state === PlayerState.DEAD) {
-            this.body.setSize(80, 64);
+        else if (this.texture.key.includes('character_attack')) {
             this.body.setOffset(0, -16);
         }
-        else if (this.state === PlayerState.JUMP) {
-            this.body.setSize(64, 80);
-            this.body.setOffset(-20, -16);
+        else {
+            this.body.setOffset(0, 0);
         }
     }
 
@@ -244,40 +234,61 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     setup_animations(): void {
+        const character_idle_frames = ['character_idle_1', 'character_idle_2', 'character_idle_3', 'character_idle_4']
         this.anims.create({
             key: 'idle',
-            frames: this.anims.generateFrameNumbers("character_idle", { start: 0, end: 3 }),
+            frames: character_idle_frames.map(frame => ({ key: frame })),
             frameRate: 12,
             repeat: -1
         });
 
+        const character_run_frames = [];
+        for (let i = 1; i < 9; i++) {
+            character_run_frames.push(`character_run_${i}`);
+        }
         this.anims.create({
             key: "run",
-            frames: this.anims.generateFrameNames("character_run", { start: 0, end: 7 }),
-            frameRate: 12,
+            frames: character_run_frames.map(frame => ({ key: frame })),
+            frameRate: 12
         });
 
+        const character_jump_frames = [];
+        for (let i = 1; i < 16; i++) {
+            character_jump_frames.push(`character_jump_${i}`)
+        }
         this.anims.create({
             key: 'jump',
-            frames: this.anims.generateFrameNames('character_jump', { start: 0, end: 14 }),
+            frames: character_jump_frames.map(frame => ({ key: frame })),
             frameRate: 12
         });
 
+        const character_first_attack_frames = [];
+        for (let i = 1; i < 5; i++) {
+            character_first_attack_frames.push(`character_attack_${i}`);
+        }
         this.anims.create({
             key: 'first_attack',
-            frames: this.anims.generateFrameNames('character_attack', { start: 0, end: 3 }),
+            frames: character_first_attack_frames.map(frame => ({ key: frame })),
             frameRate: 12
         });
 
+        const character_second_attack_frames = [];
+        for (let i = 5; i < 9; i++) {
+            character_second_attack_frames.push(`character_attack_${i}`);
+        }
         this.anims.create({
             key: 'second_attack',
-            frames: this.anims.generateFrameNames('character_attack', { start: 4, end: 7 }),
+            frames: character_second_attack_frames.map(frame => ({ key: frame })),
             frameRate: 12
         });
 
+        const character_dead_frames = [];
+        for (let i = 1; i < 9; i++) {
+            character_dead_frames.push(`character_dead_${i}`);
+        }
         this.anims.create({
             key: 'dead',
-            frames: this.anims.generateFrameNames('character_dead', { start: 0, end: 7 }),
+            frames: character_dead_frames.map(frame => ({ key: frame })),
             frameRate: 12
         });
     }
