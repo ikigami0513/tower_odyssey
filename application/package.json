@@ -38,6 +38,7 @@
   "license": "MIT",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
-    "phaser": "^3.80.1"
+    "phaser": "^3.80.1",
+    "phaser3-rex-plugins": "^1.80.4"
   }
 }

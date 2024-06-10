@@ -39,11 +39,10 @@ export class PreloadScene extends Phaser.Scene {
             this.load.image(`character_jump_${i}`, `assets/character/jump/${i}.png`);
         }
 
-        this.load.tilemapTiledJSON('tuto_level', 'assets/map/tuto_level.tmj');
         this.load.image('tiles', 'assets/tiles/Tiles.png');
     }
 
     create() {
-        this.scene.start("TutoScene");
+        this.scene.start("SelectionScene");
     }
 }

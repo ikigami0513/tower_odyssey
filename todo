@@ -1,0 +1,5 @@
+[x] intégrer django knox pour l'authentification
+[x] créer système de connexion sur l'app electron js (fetch depuis l'api)
+[en cours] menu de sélection des niveaux (fetch depuis l'api)
+[] intégrer une barre de mana pour les sorts
+[] intégrer le double saut (quand le joueur a déjà sauté, ou quand il essaie de sauté après une chute)

@@ -1,19 +1,25 @@
 import Phaser from "phaser";
 import { Player } from "../entities/player";
+import { ipcRenderer } from 'electron';
+import user from "../entities/user";
 
-export class TutoScene extends Phaser.Scene {
+export class LevelScene extends Phaser.Scene {
     player!: Player;
     sky!: Array<Phaser.GameObjects.TileSprite>;
 
     constructor() {
-        super({ key: "TutoScene" });
+        super({ key: "LevelScene" });
+    }
+
+    preload() {
+        this.load.tilemapTiledJSON('level_map', user.desired_level_url);
     }
 
     create() {
         const screenWidth = this.cameras.main.width;
         const screenHeight = this.cameras.main.height;
 
-        const map = this.make.tilemap({ key: "tuto_level" });
+        const map = this.make.tilemap({ key: "level_map" });
         const tileset = map.addTilesetImage('tiles', 'tiles');
 
         const tileSize = map.tileHeight;

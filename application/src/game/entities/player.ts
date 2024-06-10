@@ -78,7 +78,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this._health_point = this.max_health_point;
         this.health_bar = new HealthBar(this.scene, this);
 
-        this.show_hitbox = true;
+        this.show_hitbox = false;
     }
 
     public get health_point(): number {
@@ -177,11 +177,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.play('dead', true);
         }
 
-        if (this.keys.add_life_debug.isDown && this.keys.add_life_debug.getDuration() < 10) {
+        if (this.keys.add_life_debug.isDown) {
             this.health_point += 1;
         }
 
-        if (this.keys.remove_life_debug.isDown && this.keys.remove_life_debug.getDuration() < 10) {
+        if (this.keys.remove_life_debug.isDown) {
             this.health_point -= 1;
         }
     }

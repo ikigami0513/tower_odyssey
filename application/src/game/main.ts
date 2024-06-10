@@ -1,9 +1,21 @@
 import Phaser from "phaser";
+import * as settings from '../settings';
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
+
+// Scenes
+import { LoginScene } from "./scenes/login.scene";
+import { SelectionScene } from "./scenes/selection.scene";
 import { PreloadScene } from "./scenes/preload.scene";
-import { TutoScene } from "./scenes/tuto.scene";
+import { LevelScene } from "./scenes/level.scene";
 
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
+
+declare module 'phaser' {
+    interface Scene {
+        rexUI: RexUIPlugin;
+    }
+}
 
 const config = {
     type: Phaser.AUTO,
@@ -15,7 +27,7 @@ const config = {
         width: DEFAULT_WIDTH,
         height: DEFAULT_HEIGHT
     },
-    scene: [PreloadScene, TutoScene],
+    scene: [LoginScene, SelectionScene, PreloadScene, LevelScene],
     dom: {
         createContainer: true
     },
@@ -23,11 +35,22 @@ const config = {
         default: 'arcade',
         arcade: {
             debug: false,
-            gravity: { x: 0, y: 300 }
+            gravity: { x: 0, y: 350 }
         }
+    },
+    plugins: {
+        scene: [{
+            key: 'rexUI',
+            plugin: RexUIPlugin,
+            mapping: 'rexUI'
+        }]
     }
 };
 
-window.addEventListener('load', () => {
+function linkStart() {
     const game = new Phaser.Game(config);
+}
+
+document.addEventListener('DOMContentLoaded', function(event: Event) {
+    linkStart();
 });
