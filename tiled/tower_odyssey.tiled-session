@@ -3,49 +3,62 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "tuto_level.tmx",
+    "activeFile": "level_1.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
+        "": {
+            "scaleInDock": 1
+        },
         "level_1.tmx": {
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 1.5,
-            "selectedLayer": 1,
+            "scale": 4,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 305.66666666666663,
-                "y": 441.6666666666667
+                "x": 3227.125,
+                "y": 488.875
             }
+        },
+        "level_1.tmx#Buildings": {
+            "scaleInEditor": 1
         },
         "level_1.tmx#Tiles": {
             "scaleInDock": 5.5,
             "scaleInEditor": 1
         },
+        "level_1.tmx#buildings": {
+            "scaleInDock": 3
+        },
         "level_1.tmx#tiles": {
+            "scaleInDock": 1.5,
             "scaleInEditor": 1
         },
         "tuto_level.tmx": {
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 4,
-            "selectedLayer": 2,
+            "scale": 3,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 367.625,
-                "y": 606.625
+                "x": 1620.6666666666665,
+                "y": 319.83333333333337
             }
         },
         "tuto_level.tmx#Tiles": {
             "scaleInDock": 2
         },
+        "tuto_level.tmx#buildings": {
+            "scaleInDock": 3
+        },
         "tuto_level.tmx#tiles": {
             "scaleInDock": 8
         }
     },
-    "last.exportedFilePath": "C:/Users/ikiga/projets/tower_odyssey/tmj_maps",
+    "last.exportedFilePath": "C:/Users/ikiga/projets/tower_odyssey/backend/media/levels",
     "last.imagePath": "C:/Users/ikiga/projets/tower_odyssey/application/assets/tiles",
     "map.height": 40,
     "map.lastUsedExportFilter": "Fichiers de carte JSON (*.tmj *.json)",
@@ -54,12 +67,13 @@
     "map.tileWidth": 16,
     "map.width": 200,
     "openFiles": [
-        "tuto_level.tmx"
+        "tuto_level.tmx",
+        "level_1.tmx"
     ],
     "project": "tower_odyssey.tiled-project",
     "recentFiles": [
-        "level_1.tmx",
-        "tuto_level.tmx"
+        "tuto_level.tmx",
+        "level_1.tmx"
     ],
     "tileset.embedInMap": true,
     "tileset.tileSize": {

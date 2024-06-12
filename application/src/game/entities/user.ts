@@ -22,7 +22,17 @@ class User {
         this._token = token;
         this._username = username;
         this._email = email;
+        // @ts-ignore
+        window.api.setUserId(this._id);
         return true;
+    }
+
+    public logout() {
+        this._id = null;
+        this._token = null;
+        this._username = null;
+        this._email = null;
+        localStorage.removeItem('auth_token');
     }
 }
 

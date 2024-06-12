@@ -19,6 +19,8 @@ export class PreloadScene extends Phaser.Scene {
         this.load.image('golden_health_1', 'assets/hud/health/golden_1.png');
         this.load.image('golden_health_2', 'assets/hud/health/golden_2.png');
 
+        this.load.image('character_profile', 'assets/hud/profile.png')
+
         for (let i = 1; i < 5; i++) {
             this.load.image(`character_idle_${i}`, `assets/character/idle/${i}.png`);
         }
@@ -40,9 +42,10 @@ export class PreloadScene extends Phaser.Scene {
         }
 
         this.load.image('tiles', 'assets/tiles/Tiles.png');
+        this.load.image('buildings', 'assets/tiles/Buildings.png');
     }
 
     create() {
-        this.scene.start("SelectionScene");
+        this.scene.start("LoginScene");
     }
 }

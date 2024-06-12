@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 import { HealthBar } from "../gui/health_bar";
+import { LevelMenu } from "../gui/level_menu";
+import { LevelScene } from "../scenes/level.scene";
 
 class Keys {
     up:    Phaser.Input.Keyboard.Key;
@@ -7,10 +9,8 @@ class Keys {
     left:  Phaser.Input.Keyboard.Key;
     right: Phaser.Input.Keyboard.Key;
     space: Phaser.Input.Keyboard.Key;
-
-    death_debug: Phaser.Input.Keyboard.Key;
-    add_life_debug: Phaser.Input.Keyboard.Key;
-    remove_life_debug: Phaser.Input.Keyboard.Key;
+    menu: Phaser.Input.Keyboard.Key;
+    screenshot: Phaser.Input.Keyboard.Key;
 
     constructor(scene: Phaser.Scene) {
         this.up    = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
@@ -18,10 +18,8 @@ class Keys {
         this.left  = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         this.right = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.space = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
-        this.death_debug = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-        this.add_life_debug = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-        this.remove_life_debug = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        this.menu = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        this.screenshot = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
     }
 }
 
@@ -30,6 +28,7 @@ enum PlayerState {
     MOVE = "MOVE",
     JUMP = "JUMP",
     DEAD = "DEAD",
+    MENU = "MENU",
     FIRST_ATTACK = "FIRST_ATTACK",
     SECOND_ATTACK = "SECOND_ATTACK"
 }
@@ -44,8 +43,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     private _health_point: number;
     health_bar: HealthBar;
     show_hitbox: boolean;
+    level_menu: LevelMenu;
+    just_screenshot: boolean;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
+    constructor(scene: LevelScene, x: number, y: number, texture: string) {
         super(scene, x, y, texture);
 
         this.scene.add.existing(this);
@@ -68,6 +69,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.fps_debug.setScrollFactor(0);
 
         this.attack_released = true;
+        this.just_screenshot = false;
 
         this.on('animationcomplete', this.handleAnimationComplete, this);
 
@@ -79,6 +81,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.health_bar = new HealthBar(this.scene, this);
 
         this.show_hitbox = false;
+        this.level_menu = new LevelMenu(this.scene, this);
     }
 
     public get health_point(): number {
@@ -102,9 +105,27 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(): void {
+        if (this.keys.screenshot.isDown) {
+            if (!this.just_screenshot) {
+                // @ts-ignore
+                window.api.screenshot();
+                this.just_screenshot = true;
+            }
+        } else {
+            this.just_screenshot = false;
+        }
+
+        if (this.level_menu.menu.visible || this.level_menu.quit_confirm_dialog.dialog.visible) {
+            return;
+        }
+
         this.hitbox_update();
         if (this.show_hitbox) {
             this.hitbox_graphics_update();
+        }
+
+        if (this.keys.menu.isDown) {
+            this.pause();
         }
 
         if (this.body.blocked.down && this.state === PlayerState.JUMP) {
@@ -153,8 +174,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             if (this.keys.space.isUp) {
                 this.attack_released = true;
             }
-
-            this.debug_commands();
         }
         else if (this.state == PlayerState.FIRST_ATTACK) {
             if (this.keys.space.isDown && this.attack_released) {
@@ -168,22 +187,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         this.update_gui();
-    }
-
-    debug_commands() {
-        if (this.keys.death_debug.isDown) {
-            this.setVelocityX(0);
-            this.state = PlayerState.DEAD;
-            this.anims.play('dead', true);
-        }
-
-        if (this.keys.add_life_debug.isDown) {
-            this.health_point += 1;
-        }
-
-        if (this.keys.remove_life_debug.isDown) {
-            this.health_point -= 1;
-        }
     }
 
     update_gui() {
@@ -233,6 +236,22 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    pause(): void {
+        this.level_menu.menu.setVisible(true);
+        this.scene.time.paused = true;
+        this.scene.physics.world.pause();
+        this.anims.pause();
+        this.health_bar.pause(); 
+    }
+
+    resume(): void {
+        this.level_menu.menu.setVisible(false);
+        this.scene.time.paused = false;
+        this.scene.physics.world.resume();
+        this.anims.resume();
+        this.health_bar.resume();
+    }
+
     setup_animations(): void {
         const character_idle_frames = ['character_idle_1', 'character_idle_2', 'character_idle_3', 'character_idle_4']
         this.anims.create({
@@ -271,7 +290,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             frames: character_first_attack_frames.map(frame => ({ key: frame })),
             frameRate: 12
         });
-
+ 
         const character_second_attack_frames = [];
         for (let i = 5; i < 9; i++) {
             character_second_attack_frames.push(`character_attack_${i}`);

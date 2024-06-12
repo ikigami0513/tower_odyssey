@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     # Game Applications
     'authentication',
     'levels',
+    'crash_reporter',
 
     # Rest Framework Applications
     'rest_framework',

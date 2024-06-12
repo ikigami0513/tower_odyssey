@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import * as settings from '../settings';
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin.js';
 
 // Scenes
@@ -27,7 +26,7 @@ const config = {
         width: DEFAULT_WIDTH,
         height: DEFAULT_HEIGHT
     },
-    scene: [LoginScene, SelectionScene, PreloadScene, LevelScene],
+    scene: [PreloadScene, LoginScene, SelectionScene, LevelScene],
     dom: {
         createContainer: true
     },

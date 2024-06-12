@@ -1,10 +1,10 @@
 import Phaser from "phaser";
 import { Player } from "../entities/player";
-import { ipcRenderer } from 'electron';
 import user from "../entities/user";
 
 export class LevelScene extends Phaser.Scene {
     player!: Player;
+    level_end!: Phaser.Physics.Arcade.Sprite;
     sky!: Array<Phaser.GameObjects.TileSprite>;
 
     constructor() {
@@ -13,6 +13,7 @@ export class LevelScene extends Phaser.Scene {
 
     preload() {
         this.load.tilemapTiledJSON('level_map', user.desired_level_url);
+        user.desired_level_url = null;
     }
 
     create() {
@@ -21,6 +22,7 @@ export class LevelScene extends Phaser.Scene {
 
         const map = this.make.tilemap({ key: "level_map" });
         const tileset = map.addTilesetImage('tiles', 'tiles');
+        const buildings_tileset = map.addTilesetImage('buildings', 'buildings');
 
         const tileSize = map.tileHeight;
         const mapHeightInTiles = map.height;
@@ -40,11 +42,11 @@ export class LevelScene extends Phaser.Scene {
             this.sky.push(sky);
         }
 
-        const groundLayer = map.createLayer('ground', tileset, 0, screenHeight - map.height * tileSize * scale);
+        const groundLayer = map.createLayer('ground', [tileset, buildings_tileset], 0, screenHeight - map.height * tileSize * scale);
         groundLayer.setCollisionBetween(1, map.width);
         groundLayer.setScale(scale);
 
-        const backgroundLayer = map.createLayer('background', tileset, 0, screenHeight - map.height * tileSize * scale);
+        const backgroundLayer = map.createLayer('background', [tileset, buildings_tileset], 0, screenHeight - map.height * tileSize * scale);
         backgroundLayer.setScale(scale);
 
         this.player = new Player(this, 100, 450, 'character_idle_1');
@@ -58,8 +60,15 @@ export class LevelScene extends Phaser.Scene {
                 if (entity.name === 'player_spawn') {
                     this.player.setPosition(entity.x, entity.y);
                 }
+                else if (entity.name === 'level_end') {
+                    this.level_end = this.physics.add.sprite(entity.x, entity.y, null)
+                    .setVisible(true)
+                    .setSize(entity.width, entity.height);
+                }
             });
         }
+
+        this.physics.add.collider(this.player, this.level_end, this.handleLevelEnd, undefined, this);
 
         // Configurer les limites de la caméra et du monde
         this.cameras.main.setBounds(0, 0, mapWidthInTiles * tileSize * scale, mapHeightInTiles * tileSize * scale);
@@ -74,5 +83,9 @@ export class LevelScene extends Phaser.Scene {
         });
 
         this.player.update();
+    }
+
+    handleLevelEnd(player: Player, level_end: Phaser.Physics.Arcade.Sprite) {
+        console.log("level end");
     }
 }

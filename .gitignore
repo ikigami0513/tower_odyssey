@@ -4,3 +4,4 @@ backend/venv
 
 application/node_modules
 application/.vite
+application/out

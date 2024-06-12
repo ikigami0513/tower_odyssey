@@ -23,7 +23,7 @@ export class LoginScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.html('loginTemplate', 'src/templates/login.html');
+        this.load.html('loginTemplate', 'assets/templates/login.html');
     }
 
     create(): void {
@@ -35,22 +35,24 @@ export class LoginScene extends Phaser.Scene {
                     Authorization: `Token ${auth_token}`
                 }
             })
-            .then(result => {
-                if (!result.ok) {
-                    throw new Error('Error while fetching auth api.')
-                }
-                return result.json();
-            })
-            .then(data => {
-                const login_data = data as LoginTokenProps;
-                if (user.authenticate(login_data.id, auth_token, login_data.username, login_data.email)) {
-                    localStorage.setItem('auth_token', auth_token);
-                    this.scene.start('PreloadScene');
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
+                .then(result => {
+                    if (!result.ok) {
+                        throw new Error('Error while fetching auth api.')
+                    }
+                    return result.json();
+                })
+                .then(data => {
+                    const login_data = data as LoginTokenProps;
+                    if (user.authenticate(login_data.id, auth_token, login_data.username, login_data.email)) {
+                        localStorage.setItem('auth_token', auth_token);
+                        this.scene.start('SelectionScene');
+                    }
+                })
+                .catch(error => {
+                    localStorage.removeItem('auth_token');
+                    this.scene.start('LoginScene');
+                    console.error(error);
+                });
         }
         else {
             const X = this.cameras.main.width;
@@ -93,16 +95,12 @@ export class LoginScene extends Phaser.Scene {
                     const data: LoginProps = await response.json();
                     if (user.authenticate(data.user.id, data.token, data.user.username, data.user.email)) {
                         localStorage.setItem('auth_token', user.token);
-                        this.scene.start("PreloadScene");
+                        this.scene.start("SelectionScene");
                     }
                 } catch (error) {
                     console.error(error);
                 }
             });
         }
-    }
-
-    update(time: number, delta: number): void {
-
     }
 }

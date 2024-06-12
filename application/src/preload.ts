@@ -1,2 +1,9 @@
-// See the Electron documentation for details on how to use preload scripts:
-// https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
+import { contextBridge, crashReporter, ipcRenderer } from 'electron';
+
+contextBridge.exposeInMainWorld('api', {
+    close: () => ipcRenderer.send('close-app'),
+    setUserId: (userId: string) => {
+        crashReporter.addExtraParameter('userId', userId);
+    },
+    screenshot: () => ipcRenderer.send('capture-screen')
+});

@@ -68,4 +68,16 @@ export class HealthBar {
             repeat: -1
         });
     }
+
+    pause(): void {
+        this.hearts.forEach(hearth => {
+            hearth.anims.pause();
+        });
+    }
+
+    resume(): void {
+        this.hearts.forEach(hearth => {
+            hearth.anims.resume();
+        });
+    }
 }

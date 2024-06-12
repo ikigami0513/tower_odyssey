@@ -37,6 +37,53 @@ export class SelectionScene extends Phaser.Scene {
             sky.setScrollFactor(0);
             this.sky.push(sky);
         }
+
+        const sizer = this.rexUI.add.sizer({
+            orientation: 'x',
+            space: {
+                item: 10
+            },
+        });
+        const image = this.add.image(0, 0, 'character_profile').setScale(2);
+        const text = this.add.text(32, 0, user.username, {
+            fontSize: '24px',
+            color: '#000000'
+        });
+
+        sizer.add(image);
+        sizer.add(text);
+        sizer.setPosition(32, this.cameras.main.height - 32);
+
+        const logout_button = this.rexUI.add.buttons({
+            orientation: 'x',
+            buttons: [
+                this.create_logout_button()
+            ],
+            space: { item: 8 },
+            x: this.cameras.main.width - 75,
+            y: this.cameras.main.height - 32
+        }).layout();
+
+        logout_button.on('button.click', (button: Label, index: number, pointer: any, event: Event) => {
+            if (index === 0) {
+                user.logout();
+                // @ts-ignore
+                window.api.close();
+            }
+        });
+    }
+
+    create_logout_button(): Label {
+        return this.rexUI.add.label({
+            width: 100,
+            height: 40,
+            background: this.rexUI.add.roundRectangle(0, 0, 0, 0, 20, 0x111827),
+            text: this.add.text(0, 0, 'Déconnexion', { fontSize: '18px' }),
+            space: {
+                left: 10,
+                right: 10
+            }
+        });
     }
 
     async get_levels() {
@@ -60,11 +107,11 @@ export class SelectionScene extends Phaser.Scene {
     create_level_container(levels: Array<LevelProps>) {
         const scrollablePanel = this.rexUI.add.scrollablePanel({
             x: this.cameras.main.width / 2,
-            y: this.cameras.main.height / 2,
+            y: this.cameras.main.height * 0.45,
             width: this.cameras.main.width * 0.7,
-            height: this.cameras.main.height * 0.9,
+            height: this.cameras.main.height * 0.8,
             scrollMode: 'y',
-            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 10, 0x111827),
+            background: this.rexUI.add.roundRectangle(0, 0, 2, 2, 10, 0x111827).setAlpha(0.6),
             panel: {
                 child: this.create_level_cards(levels),
                 mask: {
@@ -84,7 +131,6 @@ export class SelectionScene extends Phaser.Scene {
             },
         }).layout();
 
-        // Ajouter l'interactivité aux enfants du panneau
         scrollablePanel
             .setChildrenInteractive({})
             .on('child.click', (child: any, pointer: any, event: any) => {
@@ -115,7 +161,7 @@ export class SelectionScene extends Phaser.Scene {
                 item: 20,
                 line: 20,
             }
-        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 0, 0x1F2937));
+        }).addBackground(this.rexUI.add.roundRectangle(0, 0, 10, 10, 0, 0x1F2937).setAlpha(0.6));
 
         for (let i = 0; i < levels.length; i++) {
             const card = this.create_level_card(levels[i]);
